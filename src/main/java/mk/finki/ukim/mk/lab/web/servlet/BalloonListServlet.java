@@ -30,4 +30,13 @@ public class BalloonListServlet extends HttpServlet {
         resp.setContentType("application/xhtml+xml");
         this.springTemplateEngine.process("listBalloons.html", context, resp.getWriter());
     }
+
+    @Override
+    protected void doPost(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
+        String color = req.getParameter("color");
+
+        req.getSession().setAttribute("color", color);
+        resp.sendRedirect("/selectBalloon");
+    }
+
 }

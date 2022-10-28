@@ -41,13 +41,4 @@ public class ConfirmationInfoServlet extends HttpServlet {
         this.springTemplateEngine.process("confirmationInfo.html", context, resp.getWriter());
     }
 
-    @Override
-    protected void doPost(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
-        String clientName = req.getParameter("clientName");
-        String clientAddress = req.getParameter("clientAddress");
-        HttpSession session = req.getSession();
-        session.setAttribute("clientName", clientName);
-        session.setAttribute("clientAddress", clientAddress);
-        resp.sendRedirect("/ConfirmationInfo");
-    }
 }
