@@ -1,0 +1,36 @@
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8"/>
+    <title>WP lab - Confirmation Info</title>
+    <style type="text/css">
+        body {
+            width: 800px;
+            margin: auto;
+        }
+        table {
+            width:100%;
+        }
+        table, td, th {
+            border: 1px solid black;
+            padding: 3px 2px;
+        }
+    </style>
+</head>
+<body>
+<section>
+    <header>
+        <h1>Balloon Order page - Order confirmation </h1>
+    </header>
+    <ul>
+        <li th:each="order : ${orders}">
+            <span th:text="${order.balloonColor}"></span>
+            <span th:text="${order.balloonSize}"></span>
+            <span th:text="${order.clientName}"></span>
+            <span th:text="${order.clientAddress}"></span>
+        </li>
+    </ul>
+    <a th:href="@{/}">New order</a>
+
+</section>
+</body>
+</html>
