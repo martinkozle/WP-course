@@ -24,13 +24,7 @@ public class ConfirmationInfoServlet extends HttpServlet {
         String clientAddress = (String) session.getAttribute("clientAddress");
         String color = (String) session.getAttribute("color");
         String size = (String) session.getAttribute("size");
-        if (color == null) {
-            resp.sendRedirect("/");
-        } else if (size == null) {
-            resp.sendRedirect("/selectBalloon");
-        } else if (clientName == null || clientAddress == null) {
-            resp.sendRedirect("/BalloonOrder.do");
-        }
+
         req.setAttribute("clientName", clientName);
         req.setAttribute("clientAddress", clientAddress);
         req.setAttribute("color", color);

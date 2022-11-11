@@ -21,4 +21,8 @@ public class OrderRepository {
     public void saveOrder(Order order) {
         this.orders.add(order);
     }
+
+    public Order findById(Long id) {
+        return this.orders.stream().filter(order -> order.getOrderId().equals(id)).findFirst().orElseThrow();
+    }
 }

@@ -1,5 +1,6 @@
 package mk.finki.ukim.mk.lab.web.servlet;
 
+import mk.finki.ukim.mk.lab.model.Order;
 import mk.finki.ukim.mk.lab.service.OrderService;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -7,6 +8,8 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
+import java.util.List;
 
 @WebServlet(name = "balloon-order-servlet", urlPatterns = "/BalloonOrder.do")
 public class BalloonOrderServlet extends HttpServlet {
@@ -20,16 +23,11 @@ public class BalloonOrderServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
+    protected void doGet(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws java.io.IOException {
         WebContext context = new WebContext(req, resp, req.getServletContext());
         HttpSession session = req.getSession();
         String color = (String) session.getAttribute("color");
         String size = (String) session.getAttribute("size");
-        if (color == null) {
-            resp.sendRedirect("/");
-        } else if (size == null) {
-            resp.sendRedirect("/selectBalloon");
-        }
         context.setVariable("color", color);
         context.setVariable("size", size);
         resp.setContentType("application/xhtml+xml");
@@ -43,10 +41,16 @@ public class BalloonOrderServlet extends HttpServlet {
         HttpSession session = req.getSession();
         String color = (String) session.getAttribute("color");
         String size = (String) session.getAttribute("size");
-        this.orderService.placeOrder(color, size, clientName, clientAddress);
-
         session.setAttribute("clientName", clientName);
         session.setAttribute("clientAddress", clientAddress);
+        Order order = this.orderService.placeOrder(color, size, clientName, clientAddress);
+
+        List<Long> userOrders = (List<Long>) session.getAttribute("userOrders");
+        if (userOrders == null) {
+            userOrders = new ArrayList<>();
+        }
+        userOrders.add(order.getOrderId());
+        session.setAttribute("userOrders", userOrders);
 
         resp.sendRedirect("/ConfirmationInfo");
     }

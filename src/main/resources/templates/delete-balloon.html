@@ -1,0 +1,16 @@
+<th:block xmlns:th="http://www.thymeleaf.org">
+  <section class="jumbotron text-center">
+    <div class="container">
+      <h1 class="jumbotron-heading">Are you sure you want to delete balloon: <span th:text="${balloon.name}"></span>?</h1>
+    </div>
+  </section>
+  <div>
+    <form th:action="@{/balloons/delete/{id}(id=${balloon.id})}" th:method="delete">
+      <input th:value="${balloon.id}" type="hidden" name="id"/>
+      <input type="submit" value="Delete"/>
+    </form>
+    <a href="/balloons">Back</a>
+  </div>
+
+
+</th:block>

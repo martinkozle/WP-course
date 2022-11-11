@@ -14,16 +14,20 @@
     <h1>Welcome to our Balloon Shop App</h1>
 </header>
 <main>
+    <b th:text="${error}" th:hidden="${error == null}" style="color: red"></b>
     <h2>Choose balloon color:</h2>
     <form th:action="@{/}" th:method="POST">
         <ul>
             <li th:each="balloon : ${balloons}">
                 <input type="radio" th:name="color" th:value="${balloon.name}"/>
-                <label th:text="${balloon.description}"></label>
+                <label th:text='${balloon.name + " - " + balloon.description}'></label>
+                <a th:href="@{/balloons/edit-form/{id}(id=${balloon.id})}">Edit</a>
+                <a th:href="@{/balloons/delete/{id}(id=${balloon.id})}">Delete</a>
             </li>
         </ul>
         <input type="submit" value="Submit"/>
     </form>
+    <a href="/balloons/add-form">Add new balloon</a>
 </main>
 </body>
 </html>

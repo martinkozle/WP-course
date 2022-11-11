@@ -3,6 +3,7 @@ package mk.finki.ukim.mk.lab.repository;
 import mk.finki.ukim.mk.lab.model.Balloon;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -11,7 +12,7 @@ public class BalloonRepository {
     private final List<Balloon> balloons;
 
     public BalloonRepository() {
-        this.balloons = List.of(
+        this.balloons = new ArrayList<>(List.of(
                 new Balloon("Red", "Red balloon"),
                 new Balloon("Green", "Green balloon"),
                 new Balloon("Blue", "Blue balloon"),
@@ -22,7 +23,7 @@ public class BalloonRepository {
                 new Balloon("Brown", "Brown balloon"),
                 new Balloon("Black", "Black balloon"),
                 new Balloon("White", "White balloon")
-        );
+        ));
     }
 
     public List<Balloon> findAllBalloons() {
@@ -33,5 +34,21 @@ public class BalloonRepository {
         return this.balloons.stream()
                 .filter(balloon -> balloon.getName().contains(text) || balloon.getDescription().contains(text))
                 .collect(Collectors.toList());
+    }
+
+    public Balloon save(Balloon balloon) {
+        this.balloons.add(balloon);
+        return balloon;
+    }
+
+    public void deleteById(Long id) {
+        this.balloons.removeIf(balloon -> balloon.getId().equals(id));
+    }
+
+    public Balloon findById(Long id) {
+        return this.balloons.stream()
+                .filter(balloon -> balloon.getId().equals(id))
+                .findFirst()
+                .orElseThrow();
     }
 }

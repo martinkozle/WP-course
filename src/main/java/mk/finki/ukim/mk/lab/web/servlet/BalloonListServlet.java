@@ -32,7 +32,7 @@ public class BalloonListServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
+    protected void doPost(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws java.io.IOException {
         String color = req.getParameter("color");
 
         req.getSession().setAttribute("color", color);

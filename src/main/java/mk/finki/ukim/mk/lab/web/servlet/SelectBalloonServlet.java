@@ -20,9 +20,6 @@ public class SelectBalloonServlet extends HttpServlet {
         WebContext context = new WebContext(req, resp, req.getServletContext());
         resp.setContentType("application/xhtml+xml");
         String color = (String) req.getSession().getAttribute("color");
-        if (color == null) {
-            resp.sendRedirect("/");
-        }
         context.setVariable("color", color);
         this.springTemplateEngine.process("selectBalloonSize.html", context, resp.getWriter());
     }
