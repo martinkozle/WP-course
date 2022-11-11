@@ -7,7 +7,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 
-@WebServlet(name="order-list-servlet", urlPatterns="/orders")
+@WebServlet(name="order-list-servlet", urlPatterns="/ordersLegacy")
 public class OrderListServlet extends HttpServlet {
     private final SpringTemplateEngine springTemplateEngine;
     private final OrderListService orderListService;

@@ -19,4 +19,9 @@ public class OrderListServiceImpl implements OrderListService {
     public List<Order> listAll() {
         return orderRepository.findAllOrders();
     }
+
+    @Override
+    public List<Order> fullSearch(String query) {
+        return orderRepository.fullSearch(query);
+    }
 }

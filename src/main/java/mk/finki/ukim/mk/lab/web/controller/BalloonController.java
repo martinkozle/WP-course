@@ -4,6 +4,7 @@ import mk.finki.ukim.mk.lab.model.Balloon;
 import mk.finki.ukim.mk.lab.model.Order;
 import mk.finki.ukim.mk.lab.service.BalloonService;
 import mk.finki.ukim.mk.lab.service.ManufacturerService;
+import mk.finki.ukim.mk.lab.service.OrderListService;
 import mk.finki.ukim.mk.lab.service.OrderService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,12 +18,14 @@ import java.util.NoSuchElementException;
 public class BalloonController {
     private final BalloonService balloonService;
     private final ManufacturerService manufacturerService;
-    private OrderService orderService;
+    private final OrderService orderService;
+    private final OrderListService orderListService;
 
-    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderService orderService) {
+    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderService orderService, OrderListService orderListService) {
         this.balloonService = balloonService;
         this.manufacturerService = manufacturerService;
         this.orderService = orderService;
+        this.orderListService = orderListService;
     }
 
     @GetMapping("/balloons")
@@ -83,6 +86,22 @@ public class BalloonController {
         }
         List<Order> userOrders = userOrderIds.stream().map(orderService::findById).toList();
         model.addAttribute("orders", userOrders);
+        return "listOrders";
+    }
+
+    @GetMapping("/orders")
+    public String getAllOrdersPage(Model model) {
+        List<Order> orders = orderListService.listAll();
+        model.addAttribute("orders", orders);
+        model.addAttribute("query", "");
+        return "listOrders";
+    }
+
+    @PostMapping("/orders")
+    public String getFilteredOrdersPage(@RequestParam String query, Model model) {
+        List<Order> orders = orderListService.fullSearch(query);
+        model.addAttribute("orders", orders);
+        model.addAttribute("query", "");
         return "listOrders";
     }
 }

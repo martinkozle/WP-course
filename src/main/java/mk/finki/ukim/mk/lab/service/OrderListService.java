@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface OrderListService {
     List<Order> listAll();
+
+    List<Order> fullSearch(String query);
 }

@@ -19,8 +19,14 @@
 <body>
 <section>
     <header>
-        <h1>Balloon Order page - Order confirmation </h1>
+        <h1>Order List</h1>
     </header>
+    <form th:action="@{/orders/{query}(query=${query})}" th:method="POST">
+        <label>
+            <input type="text" name="query" placeholder="Search" th:value="${query}"/>
+        </label>
+        <input type="submit" value="Search"/>
+    </form>
     <ul>
         <li th:each="order : ${orders}">
             <span th:text="${order.balloonColor}"></span>
