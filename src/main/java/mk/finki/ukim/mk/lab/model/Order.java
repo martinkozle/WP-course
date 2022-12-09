@@ -1,21 +1,28 @@
 package mk.finki.ukim.mk.lab.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Data;
 
+import javax.persistence.*;
+
 @Data
+@Entity(name = "balloon_orders")
 public class Order {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
     private String balloonColor;
     private String balloonSize;
-    private String clientName;
-    private String clientAddress;
+    @ManyToOne(fetch = FetchType.EAGER)
+    ShoppingCart shoppingCart;
 
-    public Order(String balloonColor, String balloonSize, String clientName, String clientAddress) {
-        this.orderId = (long) (Math.random() * 1000000);
+    public Order(String balloonColor, String balloonSize, ShoppingCart shoppingCart) {
         this.balloonColor = balloonColor;
         this.balloonSize = balloonSize;
-        this.clientName = clientName;
-        this.clientAddress = clientAddress;
+        this.shoppingCart = shoppingCart;
     }
 
+    public Order() {
+
+    }
 }

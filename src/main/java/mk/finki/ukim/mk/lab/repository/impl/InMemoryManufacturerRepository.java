@@ -1,4 +1,4 @@
-package mk.finki.ukim.mk.lab.repository;
+package mk.finki.ukim.mk.lab.repository.impl;
 
 import mk.finki.ukim.mk.lab.model.Manufacturer;
 import org.springframework.stereotype.Repository;
@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class ManufacturerRepository {
+public class InMemoryManufacturerRepository {
     private final List<Manufacturer> manufacturers;
 
-    public ManufacturerRepository() {
+    public InMemoryManufacturerRepository() {
         this.manufacturers = new ArrayList<>(List.of(
                 new Manufacturer("Balloon Factory Skopje", "Macedonia", "Skopje"),
                 new Manufacturer("Strumica Balloons", "Macedonia", "Strumica"),

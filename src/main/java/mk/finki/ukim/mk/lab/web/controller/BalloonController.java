@@ -2,30 +2,29 @@ package mk.finki.ukim.mk.lab.web.controller;
 
 import mk.finki.ukim.mk.lab.model.Balloon;
 import mk.finki.ukim.mk.lab.model.Order;
-import mk.finki.ukim.mk.lab.service.BalloonService;
-import mk.finki.ukim.mk.lab.service.ManufacturerService;
-import mk.finki.ukim.mk.lab.service.OrderListService;
-import mk.finki.ukim.mk.lab.service.OrderService;
+import mk.finki.ukim.mk.lab.service.*;
+import org.hibernate.Hibernate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Controller
 public class BalloonController {
     private final BalloonService balloonService;
     private final ManufacturerService manufacturerService;
-    private final OrderService orderService;
     private final OrderListService orderListService;
+    private final UserService userService;
+    private final ShoppingCartService shoppingCartService;
 
-    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderService orderService, OrderListService orderListService) {
+    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderListService orderListService, UserService userService, ShoppingCartService shoppingCartService) {
         this.balloonService = balloonService;
         this.manufacturerService = manufacturerService;
-        this.orderService = orderService;
         this.orderListService = orderListService;
+        this.userService = userService;
+        this.shoppingCartService = shoppingCartService;
     }
 
     @GetMapping("/balloons")
@@ -47,26 +46,28 @@ public class BalloonController {
 
     @GetMapping("/balloons/delete/{id}")
     public String deleteBalloonConfirmation(@PathVariable Long id, Model model) {
-        Balloon balloon = balloonService.findById(id);
-        model.addAttribute("balloon", balloon);
+        Optional<Balloon> balloon = balloonService.findById(id);
+        if (balloon.isEmpty()) {
+            return "redirect:/balloons?error=Balloon+not+found";
+        }
+        model.addAttribute("balloon", balloon.get());
         return "delete-balloon";
     }
 
     @DeleteMapping("/balloons/delete/{id}")
-    public String deleteBalloon(@RequestParam Long id) {
+    public String deleteBalloon(@PathVariable Long id) {
         balloonService.deleteById(id);
         return "redirect:/balloons";
     }
 
     @GetMapping("/balloons/edit-form/{id}")
     public String getEditBalloonPage(@PathVariable Long id, Model model) {
-        Balloon balloon = null;
-        try {
-            balloon = balloonService.findById(id);
-        } catch (NoSuchElementException e) {
+        Optional<Balloon> balloon = balloonService.findById(id);
+        if (balloon.isEmpty()) {
             return "redirect:/balloons?error=Balloon+not+found";
         }
-        model.addAttribute("balloon", balloon);
+
+        model.addAttribute("balloon", balloon.get());
         model.addAttribute("manufacturers", manufacturerService.findAll());
         return "add-balloon";
     }
@@ -79,19 +80,24 @@ public class BalloonController {
     }
 
     @GetMapping("/userOrders")
-    public String getUserOrdersPage(HttpSession session, Model model) {
-        List<Long> userOrderIds = (List<Long>) session.getAttribute("userOrders");
-        if (userOrderIds == null) {
-            userOrderIds = List.of();
-        }
-        List<Order> userOrders = userOrderIds.stream().map(orderService::findById).toList();
-        model.addAttribute("orders", userOrders);
+    public String getUserOrdersPage(Model model) {
+        var cart = shoppingCartService.getActiveShoppingCart(userService.findByUsername("testuser").orElseThrow());
+        Hibernate.initialize(cart.getOrders());
+        System.out.println(cart.getOrders());
+        model.addAttribute("orders", cart.getOrders());
+        model.addAttribute("query", "");
         return "listOrders";
     }
 
     @GetMapping("/orders")
     public String getAllOrdersPage(Model model) {
         List<Order> orders = orderListService.listAll();
+        Hibernate.initialize(orders);
+        for (Order order : orders) {
+            Hibernate.initialize(order.getShoppingCart());
+            Hibernate.initialize(order.getShoppingCart().getUser());
+        }
+        System.out.println(orders);
         model.addAttribute("orders", orders);
         model.addAttribute("query", "");
         return "listOrders";

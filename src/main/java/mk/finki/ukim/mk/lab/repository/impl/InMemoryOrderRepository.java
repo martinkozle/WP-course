@@ -1,4 +1,4 @@
-package mk.finki.ukim.mk.lab.repository;
+package mk.finki.ukim.mk.lab.repository.impl;
 
 import mk.finki.ukim.mk.lab.model.Order;
 import org.springframework.stereotype.Repository;
@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
-public class OrderRepository {
+public class InMemoryOrderRepository {
     private final List<Order> orders;
 
-    public OrderRepository() {
+    public InMemoryOrderRepository() {
         this.orders = new ArrayList<>();
     }
 
@@ -31,8 +31,6 @@ public class OrderRepository {
                 .filter(
                         order -> order.getBalloonColor().contains(query)
                                 || order.getBalloonSize().contains(query)
-                                || order.getClientName().contains(query)
-                                || order.getClientAddress().contains(query)
                 ).toList();
     }
 }

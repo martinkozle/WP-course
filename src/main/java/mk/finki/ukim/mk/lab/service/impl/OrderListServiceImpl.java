@@ -1,13 +1,15 @@
 package mk.finki.ukim.mk.lab.service.impl;
 
 import mk.finki.ukim.mk.lab.model.Order;
-import mk.finki.ukim.mk.lab.repository.OrderRepository;
+import mk.finki.ukim.mk.lab.repository.jpa.OrderRepository;
 import mk.finki.ukim.mk.lab.service.OrderListService;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
+@Transactional
 public class OrderListServiceImpl implements OrderListService {
     private final OrderRepository orderRepository;
 
@@ -17,11 +19,11 @@ public class OrderListServiceImpl implements OrderListService {
 
     @Override
     public List<Order> listAll() {
-        return orderRepository.findAllOrders();
+        return orderRepository.findAll();
     }
 
     @Override
     public List<Order> fullSearch(String query) {
-        return orderRepository.fullSearch(query);
+        return orderRepository.findAllByBalloonColorContainingIgnoreCaseOrBalloonSizeContainingIgnoreCase(query, query);
     }
 }

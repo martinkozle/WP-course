@@ -1,4 +1,4 @@
-package mk.finki.ukim.mk.lab.repository;
+package mk.finki.ukim.mk.lab.repository.impl;
 
 import mk.finki.ukim.mk.lab.model.Balloon;
 import org.springframework.stereotype.Repository;
@@ -8,10 +8,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Repository
-public class BalloonRepository {
+public class InMemoryBalloonRepository {
     private final List<Balloon> balloons;
 
-    public BalloonRepository() {
+    public InMemoryBalloonRepository() {
         this.balloons = new ArrayList<>(List.of(
                 new Balloon("Red", "Red balloon"),
                 new Balloon("Green", "Green balloon"),

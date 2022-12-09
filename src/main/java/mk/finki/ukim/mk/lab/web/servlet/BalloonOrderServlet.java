@@ -1,7 +1,10 @@
 package mk.finki.ukim.mk.lab.web.servlet;
 
 import mk.finki.ukim.mk.lab.model.Order;
+import mk.finki.ukim.mk.lab.model.User;
 import mk.finki.ukim.mk.lab.service.OrderService;
+import mk.finki.ukim.mk.lab.service.ShoppingCartService;
+import mk.finki.ukim.mk.lab.service.UserService;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -15,11 +18,11 @@ import java.util.List;
 public class BalloonOrderServlet extends HttpServlet {
 
     private final SpringTemplateEngine springTemplateEngine;
-    private final OrderService orderService;
+    private final UserService userService;
 
-    public BalloonOrderServlet(SpringTemplateEngine springTemplateEngine, OrderService orderService) {
+    public BalloonOrderServlet(SpringTemplateEngine springTemplateEngine, UserService userService) {
         this.springTemplateEngine = springTemplateEngine;
-        this.orderService = orderService;
+        this.userService = userService;
     }
 
     @Override
@@ -43,14 +46,7 @@ public class BalloonOrderServlet extends HttpServlet {
         String size = (String) session.getAttribute("size");
         session.setAttribute("clientName", clientName);
         session.setAttribute("clientAddress", clientAddress);
-        Order order = this.orderService.placeOrder(color, size, clientName, clientAddress);
-
-        List<Long> userOrders = (List<Long>) session.getAttribute("userOrders");
-        if (userOrders == null) {
-            userOrders = new ArrayList<>();
-        }
-        userOrders.add(order.getOrderId());
-        session.setAttribute("userOrders", userOrders);
+        userService.placeOrder(color, size, "testuser");
 
         resp.sendRedirect("/ConfirmationInfo");
     }

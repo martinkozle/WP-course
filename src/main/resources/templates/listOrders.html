@@ -31,8 +31,8 @@
         <li th:each="order : ${orders}">
             <span th:text="${order.balloonColor}"></span>
             <span th:text="${order.balloonSize}"></span>
-            <span th:text="${order.clientName}"></span>
-            <span th:text="${order.clientAddress}"></span>
+            <span th:text="${order.getShoppingCart().getUser().getName()}"></span>
+            <span th:text="${order.getShoppingCart().getDateCreated()}"></span>
         </li>
     </ul>
     <a th:href="@{/balloons}">New order</a>

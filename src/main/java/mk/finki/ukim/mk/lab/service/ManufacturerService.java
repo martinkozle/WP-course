@@ -5,5 +5,13 @@ import mk.finki.ukim.mk.lab.model.Manufacturer;
 import java.util.List;
 
 public interface ManufacturerService {
-    public List<Manufacturer> findAll();
+    List<Manufacturer> findAll();
+
+    Long count();
+
+    Manufacturer save(String name, String country);
+
+    Manufacturer save(String name, String country, String address);
+
+    List<Manufacturer> saveAll(List<Manufacturer> manufacturers);
 }
