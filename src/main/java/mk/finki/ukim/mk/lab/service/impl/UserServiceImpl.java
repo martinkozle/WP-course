@@ -18,12 +18,10 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final ShoppingCartService shoppingCartService;
-    private final OrderService orderService;
 
-    public UserServiceImpl(UserRepository userRepository, ShoppingCartService shoppingCartService, OrderService orderService) {
+    public UserServiceImpl(UserRepository userRepository, ShoppingCartService shoppingCartService) {
         this.userRepository = userRepository;
         this.shoppingCartService = shoppingCartService;
-        this.orderService = orderService;
     }
 
     @Override
@@ -54,9 +52,7 @@ public class UserServiceImpl implements UserService {
         if (user.isEmpty()) {
             return Optional.empty();
         }
-        ShoppingCart shoppingCart = shoppingCartService.getActiveShoppingCart(user.get());
-        Order order = new Order(balloonColor, balloonSize, shoppingCart);
-        orderService.save(order);
+        var order = shoppingCartService.addOrderToShoppingCart(user.get(), balloonColor, balloonSize);
         return Optional.of(order);
     }
 }

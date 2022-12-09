@@ -14,6 +14,6 @@ public interface ShoppingCartService {
 
     Optional<ShoppingCart> findLatestShoppingCartForUser(User user);
 
-    ShoppingCart addOrderToShoppingCart(User user, Order order);
+    Order addOrderToShoppingCart(User user, String balloonColor, String balloonSize);
 }
 

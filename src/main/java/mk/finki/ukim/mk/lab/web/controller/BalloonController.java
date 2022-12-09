@@ -18,13 +18,15 @@ public class BalloonController {
     private final OrderListService orderListService;
     private final UserService userService;
     private final ShoppingCartService shoppingCartService;
+    private final OrderService orderService;
 
-    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderListService orderListService, UserService userService, ShoppingCartService shoppingCartService) {
+    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderListService orderListService, UserService userService, ShoppingCartService shoppingCartService, OrderService orderService) {
         this.balloonService = balloonService;
         this.manufacturerService = manufacturerService;
         this.orderListService = orderListService;
         this.userService = userService;
         this.shoppingCartService = shoppingCartService;
+        this.orderService = orderService;
     }
 
     @GetMapping("/balloons")
@@ -82,9 +84,8 @@ public class BalloonController {
     @GetMapping("/userOrders")
     public String getUserOrdersPage(Model model) {
         var cart = shoppingCartService.getActiveShoppingCart(userService.findByUsername("testuser").orElseThrow());
-        Hibernate.initialize(cart.getOrders());
-        System.out.println(cart.getOrders());
-        model.addAttribute("orders", cart.getOrders());
+        var orders = orderService.findAllByShoppingCart(cart);
+        model.addAttribute("orders", orders);
         model.addAttribute("query", "");
         return "listOrders";
     }

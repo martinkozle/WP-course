@@ -4,10 +4,12 @@ import mk.finki.ukim.mk.lab.model.Order;
 import mk.finki.ukim.mk.lab.model.ShoppingCart;
 import mk.finki.ukim.mk.lab.model.User;
 import mk.finki.ukim.mk.lab.repository.jpa.ShoppingCartRepository;
+import mk.finki.ukim.mk.lab.service.OrderService;
 import mk.finki.ukim.mk.lab.service.ShoppingCartService;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +17,11 @@ import java.util.Optional;
 @Transactional
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
+    private final OrderService orderService;
 
-    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository) {
+    public ShoppingCartServiceImpl(ShoppingCartRepository shoppingCartRepository, OrderService orderService) {
         this.shoppingCartRepository = shoppingCartRepository;
+        this.orderService = orderService;
     }
 
     @Override
@@ -27,24 +31,17 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCart getActiveShoppingCart(User user) {
-        return shoppingCartRepository.findFirstByUserOrderByDateCreatedDesc(user).orElse(
-                shoppingCartRepository.save(new ShoppingCart(user))
-        );
+        return findLatestShoppingCartForUser(user).orElseGet(() -> shoppingCartRepository.save(new ShoppingCart(user)));
     }
 
     @Override
     public Optional<ShoppingCart> findLatestShoppingCartForUser(User user) {
-        return shoppingCartRepository.findFirstByUserOrderByDateCreatedDesc(user);
+        return shoppingCartRepository.findAllByUser(user).stream().max(Comparator.comparing(ShoppingCart::getDateCreated));
     }
 
     @Override
-    public ShoppingCart addOrderToShoppingCart(User user, Order order) {
+    public Order addOrderToShoppingCart(User user, String balloonColor, String balloonSize) {
         ShoppingCart shoppingCart = getActiveShoppingCart(user);
-        if (shoppingCart.getOrders().stream().anyMatch(o -> o.equals(order))) {
-            throw new IllegalArgumentException("Order already exists");
-        }
-        shoppingCart.getOrders().add(order);
-        return this.shoppingCartRepository.save(shoppingCart);
-
+        return orderService.save(balloonColor, balloonSize, shoppingCart);
     }
 }
