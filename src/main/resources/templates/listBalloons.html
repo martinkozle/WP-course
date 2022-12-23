@@ -1,4 +1,4 @@
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="utf-8"/>
     <title>Balloon Order page - Welcome and choose a Balloon</title>
@@ -21,16 +21,19 @@
             <li th:each="balloon : ${balloons}">
                 <input type="radio" th:name="color" th:value="${balloon.name}"/>
                 <label th:text='${balloon.name + " - " + balloon.description}'></label>
-                <a th:href="@{/balloons/edit-form/{id}(id=${balloon.id})}">Edit</a>
-                <a th:href="@{/balloons/delete/{id}(id=${balloon.id})}">Delete</a>
+                <th:block sec:authorize="hasRole('ADMIN')">
+                    <a th:href="@{/balloons/edit-form/{id}(id=${balloon.id})}">Edit</a>
+                    <a th:href="@{/balloons/delete/{id}(id=${balloon.id})}">Delete</a>
+                </th:block>
             </li>
         </ul>
         <input type="submit" value="Submit"/>
     </form>
-    <a href="/balloons/add-form">Add new balloon</a>
-    <a th:href="@{/logoutOrder}">Log out</a>
-    <a th:href="@{/userOrders}">User orders</a>
-    <a th:href="@{/orders}">All orders</a>
+    <a sec:authorize="hasRole('ADMIN')" href="/balloons/add-form">Add new balloon</a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/logoutOrder}">Log out</a>
+    <a sec:authorize="!isAuthenticated()" th:href="@{/login}">Log in</a>
+    <a sec:authorize="isAuthenticated()" th:href="@{/userOrders}">User orders</a>
+    <a sec:authorize="hasRole('ADMIN')" th:href="@{/orders}">All orders</a>
 </main>
 </body>
 </html>

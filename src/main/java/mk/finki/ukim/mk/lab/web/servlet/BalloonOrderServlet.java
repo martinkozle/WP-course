@@ -5,6 +5,7 @@ import mk.finki.ukim.mk.lab.model.User;
 import mk.finki.ukim.mk.lab.service.OrderService;
 import mk.finki.ukim.mk.lab.service.ShoppingCartService;
 import mk.finki.ukim.mk.lab.service.UserService;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.thymeleaf.context.WebContext;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
@@ -46,7 +47,8 @@ public class BalloonOrderServlet extends HttpServlet {
         String size = (String) session.getAttribute("size");
         session.setAttribute("clientName", clientName);
         session.setAttribute("clientAddress", clientAddress);
-        userService.placeOrder(color, size, "testuser");
+        var user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        userService.placeOrder(color, size, user.getUsername());
 
         resp.sendRedirect("/ConfirmationInfo");
     }

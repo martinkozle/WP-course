@@ -8,6 +8,6 @@ public class LogOutServlet extends HttpServlet {
     @Override
     protected void doGet(javax.servlet.http.HttpServletRequest req, javax.servlet.http.HttpServletResponse resp) throws javax.servlet.ServletException, java.io.IOException {
         req.getSession().invalidate();
-        resp.sendRedirect("/");
+        resp.sendRedirect("/balloons");
     }
 }

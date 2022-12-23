@@ -2,12 +2,15 @@ package mk.finki.ukim.mk.lab.web.controller;
 
 import mk.finki.ukim.mk.lab.model.Balloon;
 import mk.finki.ukim.mk.lab.model.Order;
+import mk.finki.ukim.mk.lab.model.User;
 import mk.finki.ukim.mk.lab.service.*;
 import org.hibernate.Hibernate;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,15 +19,13 @@ public class BalloonController {
     private final BalloonService balloonService;
     private final ManufacturerService manufacturerService;
     private final OrderListService orderListService;
-    private final UserService userService;
     private final ShoppingCartService shoppingCartService;
     private final OrderService orderService;
 
-    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderListService orderListService, UserService userService, ShoppingCartService shoppingCartService, OrderService orderService) {
+    public BalloonController(BalloonService balloonService, ManufacturerService manufacturerService, OrderListService orderListService, ShoppingCartService shoppingCartService, OrderService orderService) {
         this.balloonService = balloonService;
         this.manufacturerService = manufacturerService;
         this.orderListService = orderListService;
-        this.userService = userService;
         this.shoppingCartService = shoppingCartService;
         this.orderService = orderService;
     }
@@ -83,7 +84,8 @@ public class BalloonController {
 
     @GetMapping("/userOrders")
     public String getUserOrdersPage(Model model) {
-        var cart = shoppingCartService.getActiveShoppingCart(userService.findByUsername("testuser").orElseThrow());
+        var user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        var cart = shoppingCartService.getActiveShoppingCart(user);
         var orders = orderService.findAllByShoppingCart(cart);
         model.addAttribute("orders", orders);
         model.addAttribute("query", "");

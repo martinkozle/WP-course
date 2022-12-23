@@ -3,6 +3,7 @@ package mk.finki.ukim.mk.lab.service.impl;
 import mk.finki.ukim.mk.lab.model.Order;
 import mk.finki.ukim.mk.lab.model.ShoppingCart;
 import mk.finki.ukim.mk.lab.model.User;
+import mk.finki.ukim.mk.lab.model.enums.Role;
 import mk.finki.ukim.mk.lab.repository.jpa.UserRepository;
 import mk.finki.ukim.mk.lab.service.OrderService;
 import mk.finki.ukim.mk.lab.service.ShoppingCartService;
@@ -29,7 +30,15 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByUsername(username).isPresent()) {
             throw new IllegalArgumentException("User already exists");
         }
-        return userRepository.save(new User(username, name, surname, password, dateOfBirth));
+        return userRepository.save(new User(username, name, surname, password, dateOfBirth, Role.USER));
+    }
+
+    @Override
+    public Optional<User> changeRole(String username, Role role) {
+        return userRepository.findByUsername(username).map(user -> {
+            user.setRole(role);
+            return userRepository.save(user);
+        });
     }
 
     @Override

@@ -33,12 +33,13 @@ public class User implements UserDetails {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    public User(String username, String name, String surname, String password, LocalDate dateOfBirth) {
+    public User(String username, String name, String surname, String password, LocalDate dateOfBirth, Role role) {
         this.username = username;
         this.name = name;
         this.surname = surname;
         this.password = password;
         this.dateOfBirth = dateOfBirth;
+        this.role = role;
     }
 
     public User() {
